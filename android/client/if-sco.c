@@ -573,10 +573,19 @@ static void open_input_stream_p(int argc, const char **argv)
 	}
 
 	err = if_audio_sco->open_input_stream(if_audio_sco,
-						0,
-						AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET,
+#ifndef ICS_AUDIO_BLOB
+                                                0,
+                                                AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET,
 						config,
+                                                &stream_in);
+#else
+                                                AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET,
+						AUDIO_FORMAT_PCM_16_BIT,
+						AUDIO_CHANNEL_OUT_MONO,
+						atoi(argv[2]),
+						(audio_in_acoustics_t) 0,
 						&stream_in);
+#endif
 	if (err < 0) {
 		haltest_error("open output stream returned %d\n", err);
 		goto failed;
